@@ -1,0 +1,96 @@
+/* src/components/MyMatches/styles.css */
+.my-matches-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.matches-section {
+    margin-bottom: 2rem;
+}
+
+.matches-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-gray-dark);
+}
+
+.subsection {
+    margin-bottom: 2rem;
+}
+
+.subsection h3 {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+}
+
+.matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.match-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.accept-button {
+    background-color: var(--color-green);
+    color: var(--color-white);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.accept-button:hover {
+    background-color: #5a7a5e;
+}
+
+.decline-button {
+    background-color: var(--color-soft-red);
+    color: var(--color-white);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.decline-button:hover {
+    background-color: #c0392b;
+}
+
+.expiration-warning {
+    color: var(--color-soft-red);
+    font-size: 0.9em;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.meetup-details {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background-color: var(--color-background-light);
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+}
+
+.meetup-details-header {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-gray-dark);
+}
+
+.meetup-comments {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: var(--color-text-secondary);
+}

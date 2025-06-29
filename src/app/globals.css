@@ -1,21 +1,592 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* @tailwind base; */
+/* @tailwind components; */
+/* @tailwind utilities; */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-primary: #E67F0F;
+  --color-secondary: #FFF0D7;
+  --color-white: #FFFFFF;
+  --color-gray-dark: #695958;
+  --color-green: #648767;
+  --color-soft-red: #E74C3C;
+  
+  /* Variaciones útiles */
+  --color-primary-hover: #d16f0a;
+  --color-primary-light: rgba(230, 127, 15, 0.1);
+  --color-gray-light: rgba(105, 89, 88, 0.1);
+  --color-gray-medium: rgba(105, 89, 88, 0.3);
+  --color-gray-text: var(--color-gray-dark);
+  --color-text-secondary: rgba(105, 89, 88, 0.7);
+
+  /* Reemplazos para colores antiguos */
+  --color-background-card: var(--color-white);
+  --color-background-light: var(--color-secondary);
+  --color-border: rgba(105, 89, 88, 0.2);
+  --color-shadow-light: rgba(105, 89, 88, 0.05);
+  --color-shadow-medium: rgba(105, 89, 88, 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-primary: #E67F0F;
+  --color-secondary: #FFF0D7;
+  --color-white: #FFFFFF;
+  --color-gray-dark: #695958;
+  --color-green: #648767;
+  --color-soft-red: #E74C3C;
+    
+    /* Variaciones útiles */
+    --color-primary-hover: #d16f0a;
+    --color-primary-light: rgba(230, 127, 15, 0.1);
+    --color-gray-light: rgba(105, 89, 88, 0.1);
+    --color-gray-medium: rgba(105, 89, 88, 0.3);
+    --color-gray-text: var(--color-gray-dark);
+    --color-text-secondary: rgba(105, 89, 88, 0.7);
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-secondary);
+  color: var(--color-gray-dark);
+  font-family: Inter, sans-serif;
+}
+
+/* UI componentes */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.hover\:bg-primary\/90:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Add this to your src/app/globals.css file - REPLACE the previous dialog styles */
+
+/* Radix Dialog styles */
+[data-state="open"] {
+  animation: fadeIn 200ms ease-out;
+}
+
+[data-state="closed"] {
+  animation: fadeOut 200ms ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+/* Dialog overlay */
+.fixed {
+  position: fixed;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.z-50 {
+  z-index: 50;
+}
+
+.bg-black\/80 {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Dialog content */
+.left-\[50\%\] {
+  left: 50%;
+}
+
+.top-\[50\%\] {
+  top: 50%;
+}
+
+.translate-x-\[-50\%\] {
+  transform: translateX(-50%);
+}
+
+.translate-y-\[-50\%\] {
+  transform: translateY(-50%);
+}
+
+.grid {
+  display: grid;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.max-w-lg {
+  max-width: 28rem; /* Reduced from 32rem */
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.gap-6 {
+  gap: 1.5rem;
+}
+
+.border {
+  border: 1px solid var(--color-border);
+}
+
+.bg-background {
+  background-color: var(--color-white);
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.duration-200 {
+  transition-duration: 200ms;
+}
+
+.sm\:rounded-lg {
+  border-radius: 0.75rem;
+}
+
+.sm\:max-w-md {
+  max-width: 28rem;
+}
+
+/* Dialog header */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.space-y-1\.5 > * + * {
+  margin-top: 0.375rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.sm\:text-left {
+  text-align: left;
+}
+
+/* Dialog title */
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.leading-none {
+  line-height: 1;
+}
+
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+
+/* Dialog footer */
+.flex-col-reverse {
+  flex-direction: column-reverse;
+}
+
+.sm\:flex-row {
+  flex-direction: row;
+}
+
+.sm\:justify-end {
+  justify-content: flex-end;
+}
+
+.sm\:space-x-2 > * + * {
+  margin-left: 0.5rem;
+}
+
+/* Input styles */
+.h-10 {
+  height: 2.5rem;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.border-input {
+  border-color: var(--color-border);
+}
+
+.bg-background {
+  background-color: var(--color-white);
+}
+
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+/* Grid layouts for form */
+.grid-cols-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+/* Button styles */
+.inline-flex {
+  display: inline-flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.transition-colors {
+  transition: color 150ms ease-in-out, background-color 150ms ease-in-out, border-color 150ms ease-in-out;
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.text-primary-foreground {
+  color: var(--color-white);
+}
+
+.hover\:bg-primary\/90:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Select trigger styles */
+.justify-between {
+  justify-content: space-between;
+}
+
+.border-input {
+  border-color: var(--color-border);
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+.focus\:outline-none:focus {
+  outline: none;
+}
+
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.focus\:ring-ring:focus {
+  --tw-ring-color: var(--color-primary);
+}
+
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: 2px;
+}
+
+.disabled\:cursor-not-allowed:disabled {
+  cursor: not-allowed;
+}
+
+.disabled\:opacity-50:disabled {
+  opacity: 0.5;
+}
+
+/* Select content */
+.relative {
+  position: relative;
+}
+
+.z-50 {
+  z-index: 50;
+}
+
+.max-h-96 {
+  max-height: 24rem;
+}
+
+.min-w-\[8rem\] {
+  min-width: 8rem;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.bg-popover {
+  background-color: var(--color-white);
+}
+
+.text-popover-foreground {
+  color: var(--color-gray-dark);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Select item */
+.cursor-default {
+  cursor: default;
+}
+
+.select-none {
+  user-select: none;
+}
+
+.rounded-sm {
+  border-radius: 0.125rem;
+}
+
+.py-1\.5 {
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+}
+
+.pl-8 {
+  padding-left: 2rem;
+}
+
+.pr-2 {
+  padding-right: 0.5rem;
+}
+
+.outline-none {
+  outline: none;
+}
+
+.focus\:bg-accent:focus {
+  background-color: var(--color-background-light);
+}
+
+.focus\:text-accent-foreground:focus {
+  color: var(--color-gray-dark);
+}
+
+/* Textarea styles */
+.min-h-\[80px\] {
+  min-height: 80px;
+}
+
+.resize-none {
+  resize: none;
+}
+
+/* Utility classes */
+.text-muted-foreground {
+  color: var(--color-text-secondary);
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.text-gray-500 {
+  color: var(--color-text-secondary);
+}
+
+.text-red-500 {
+  color: var(--color-soft-red);
+}
+
+.hover\:bg-gray-100:hover {
+  background-color: var(--color-background-light);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.bg-white {
+  background-color: var(--color-white);
+}
+
+.border-gray-200 {
+  border-color: var(--color-border);
+}
+
+/* Custom improvements for modal form */
+.modal-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: end;
+}
+
+.modal-select-container {
+  max-width: 100%;
+}
+
+.modal-time-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.modal-button-group {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.modal-button-cancel {
+  background-color: var(--color-background-light);
+  color: var(--color-gray-dark);
+  border: 1px solid var(--color-border);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-button-cancel:hover {
+  background-color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.modal-button-submit {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-button-submit:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.modal-error-text {
+  color: var(--color-soft-red);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.modal-helper-text {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Add this to your globals.css file - append to existing styles */
+
+/* Fix time input spacing and alignment */
+.grid-cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+/* Ensure consistent widths for all form elements */
+.modal-form-element {
+  width: 100%;
+}
+
+/* Style for read-only input */
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+/* Make sure all selects, inputs, and textareas have consistent width */
+[data-radix-select-trigger] {
+  width: 100% !important;
+}
+
+input[type="text"],
+input[type="time"],
+textarea,
+select {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* Improve modal content max width and form layout */
+.sm\:max-w-md {
+  max-width: 32rem !important;
+}
+
+/* Fix textarea to match other input widths */
+textarea {
+  width: 100% !important;
+  min-height: 80px;
 }
