@@ -47,6 +47,8 @@ type AcceptMatchModalProps = {
     chessSetProvider: ChessSetProvider;
     comments?: string;
   };
+  senderName: string;    // ✅ Just add these two
+  receiverName: string; 
 }
 
 const AcceptMatchModal = ({
@@ -54,22 +56,28 @@ const AcceptMatchModal = ({
   onClose,
   onAccept,
   matchDetails,
-  meetupDetails
+  meetupDetails,
+  senderName,    // ✅ Destructure these props
+  receiverName
 }: AcceptMatchModalProps) => {
-  // const [formData, setFormData] = useState<MatchAcceptanceDetails>({
-  //   cafeAddress: '',
-  //   meetingTime: '',
-  //   chessSetProvider: 'self',
-  //   contactInfo: ''
-  // });
-  // Display chess set provider text
+  
   const getChessSetProviderText = (provider: ChessSetProvider): string => {
+  // Get sender and receiver names from the matchDetails
     switch(provider) {
-      case 'self': return 'You will bring the chess set';
+      case 'self': return `${senderName} will bring the chess set`;
       case 'cafe': return 'The café provides the chess set';
-      case 'opponent': return 'Your opponent will bring the chess set';
+      case 'opponent': return `${receiverName} will bring the chess set`;
       default: return '';
     }
+  };
+  // const getChessSetProviderText = (provider: ChessSetProvider): string => {
+  //   switch(provider) {
+  //     case 'self': return 'They will bring the chess set';
+  //     case 'cafe': return 'The café provides the chess set';
+  //     case 'opponent': return 'You will bring the chess set';
+  //     default: return '';
+  //   }
+  // };
 
   // const [errors, setErrors] = useState<Partial<Record<keyof MatchAcceptanceDetails, string>>>({});
 
@@ -109,7 +117,7 @@ const AcceptMatchModal = ({
   //     ...formData,
   //     chessSetProvider: value
   //   });
-  };
+  
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

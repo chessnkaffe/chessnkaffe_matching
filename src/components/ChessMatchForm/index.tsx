@@ -1515,7 +1515,10 @@ const ChessMatchForm: FC = () => {
                   </div>
                   
                   <div className="match-scores">
-                    <div className="score-item">
+                    <div className="compatibility-score">
+                      Compatibility: {Math.round(match.matchScore * 10)}%
+                    </div>
+                    {/* <div className="score-item">
                       <span className="score-label">Total Score:</span>
                       <span className="score-value">{Math.round(match.matchScore)}</span>
                     </div>
@@ -1542,7 +1545,7 @@ const ChessMatchForm: FC = () => {
                     <div className="score-item">
                       <span className="score-label">Time Score:</span>
                       <span className="score-value">{Math.round(match.timeScore)}</span>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="match-details">

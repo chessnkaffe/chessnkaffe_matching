@@ -398,16 +398,28 @@ const MyMatches: FC = () => {
   };
 
    const renderMatchCard = (match: MatchConnection) => {
-    console.log('Rendering match card for match:', match.id);
-    // Add this helper function
-    const getChessSetProviderShort = (provider: string): string => {
+      console.log('Rendering match card for match:', match.id);
+      // Add this helper function
+      const getChessSetProviderShort = (provider: string, match: MatchConnection): string => {
+        // Get the person who SENT the invitation (they chose who brings the set)
+        const senderName = match.senderDetails.displayName;
+        const receiverName = match.receiverDetails.displayName;
+        
       switch(provider) {
-        case 'self': return 'They will bring set';
-        case 'cafe': return 'Café provides set';
-        case 'opponent': return 'You bring set';
+        case 'self': return `${senderName} will provide chess set`;
+        case 'cafe': return 'Café will provide chess set';
+        case 'opponent': return `${receiverName} will provide chess set`;
         default: return '';
       }
     };
+    // const getChessSetProviderShort = (provider: string): string => {
+    //   switch(provider) {
+    //     case 'self': return 'They will bring set';
+    //     case 'cafe': return 'Café provides set';
+    //     case 'opponent': return 'You bring set';
+    //     default: return '';
+    //   }
+    // };
     return(
      <div key={match.id} className="match-card">
        <div className="match-header">
@@ -435,12 +447,31 @@ const MyMatches: FC = () => {
            <span className="meta-tag">🏳️‍🌈 Queer</span>}
        </div>
 
-       <div className="match-details">
-        <div>Date: {new Date(match.matchingDetails.date).toLocaleDateString()}</div>
-        <div>
-          Time: {match.matchingDetails.timeWindow.start} - {match.matchingDetails.timeWindow.end}
+       <div className="meetup-details">
+        <div>Date: {new Date(match.matchingDetails.date).toLocaleDateString('en-US', {
+        weekday: 'long', month: 'long', day: 'numeric'})}
         </div>
-        <div>Area: {match.matchingDetails.area}</div>
+        {/* <div>Time: {match.matchingDetails.timeWindow.start} - {match.matchingDetails.timeWindow.end}</div>
+        <div>Area: {match.matchingDetails.area}</div> */}
+        {/* Show specific invitation details if they exist */}
+        {(match.status === 'pending' || !match.meetupDetails) && (
+          <>  
+          {match.meetupDetails ? (
+            <>
+              <div>Time: {match.meetupDetails.meetingTime} - {match.meetupDetails.meetingEndTime}</div>
+              <div>Café: {match.meetupDetails.cafeAddress}</div>
+              <div>Chess Set: {getChessSetProviderShort(match.meetupDetails.chessSetProvider, match)}</div>
+              {match.meetupDetails.comments && (
+                <div className="meetup-comments">Comments: "{match.meetupDetails.comments}"</div>
+              )}
+            </>
+          ) : (
+            /* Fallback if no specific details yet */
+            <div>Time: {match.matchingDetails.timeWindow.start} - {match.matchingDetails.timeWindow.end}</div>
+          )}
+          </>
+        )}
+
         {match.status === 'pending' && match.expiresAt && (
           <div className="expiration-warning">
             Expires: {new Date(match.expiresAt).toLocaleString()}
@@ -452,9 +483,10 @@ const MyMatches: FC = () => {
       {match.status === 'accepted' && match.meetupDetails && (
         <div className="meetup-details">
           <div className="meetup-details-header">Meetup Details</div>
+          <div>Date: {new Date(match.matchingDetails.date).toLocaleDateString('en-US', {weekday: 'long', month: 'long', day: 'numeric'})}</div>  {/* ← ADD THIS LINE */}
           <div>Location: {match.meetupDetails.cafeAddress}</div>
           <div>Time: {match.meetupDetails.meetingTime} - {match.meetupDetails.meetingEndTime}</div>
-          <div>Chess Set: {getChessSetProviderShort(match.meetupDetails.chessSetProvider)}</div>
+          <div>Chess Set: {getChessSetProviderShort(match.meetupDetails.chessSetProvider, match)}</div>
           {match.meetupDetails.comments && (
             <div className="meetup-comments">"{match.meetupDetails.comments}"</div>
           )}
@@ -499,6 +531,8 @@ const MyMatches: FC = () => {
            onAccept={() => handleAcceptMatch(selectedMatch.id!)}
            matchDetails={selectedMatch.matchingDetails}
            meetupDetails={selectedMatch.meetupDetails}
+           senderName={selectedMatch.senderDetails.displayName}      // ✅ Just add these two props
+           receiverName={selectedMatch.receiverDetails.displayName}
          />
        )}
 
