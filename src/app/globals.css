@@ -590,3 +590,59 @@ textarea {
   width: 100% !important;
   min-height: 80px;
 }
+
+
+
+/* WORKING MOBILE MODAL FIX */
+@media (max-width: 768px) {
+  /* Fix modal positioning - target the actual modal container */
+  [data-radix-dialog-content] {
+    position: fixed !important;
+    left: 16px !important;
+    right: 16px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    max-height: 90vh !important;
+    margin: 0 !important;
+    z-index: 50;
+  }
+  
+  /* Alternative targeting if the above doesn't work */
+  .fixed.left-\[50\%\].top-\[50\%\] {
+    left: 16px !important;
+    right: 16px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+  }
+  
+  /* Make sure dropdown appears above everything */
+  [data-radix-select-content] {
+    z-index: 999 !important;
+    position: fixed !important;
+  }
+  
+  /* Stack form elements vertically on mobile */
+  .grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Fix select dropdown width */
+  [data-radix-select-trigger] {
+    width: 100% !important;
+  }
+}
+
+/* For very small phones */
+@media (max-width: 480px) {
+  [data-radix-dialog-content],
+  .fixed.left-\[50\%\].top-\[50\%\] {
+    left: 8px !important;
+    right: 8px !important;
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+}

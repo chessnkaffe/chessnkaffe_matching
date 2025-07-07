@@ -523,6 +523,47 @@ const UserProfile: FC = () => {
     <div className="user-profile-container">
       <div className="header-gradient">
         <div className="header-content">
+          {/* Line 1: Title + Icons */}
+          <div className="header-top">
+            <h1 className="header-title">Welcome, {userData?.alias}!</h1>
+            <div className="header-icons">
+              <NotificationBell />
+              <button onClick={handleLogout} className="logout-button">
+                <LogOut className="button-icon" />
+                <span className="logout-text">Logout</span>
+              </button>
+            </div>
+          </div>
+          
+          {/* Line 2: Tabs only */}
+          <div className="header-actions">
+            <div className="tab-container">
+              <div className="tab-buttons">
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className={`tab-button ${activeTab === 'profile' ? 'tab-button-active' : ''}`}
+                >
+                  Profile
+                </button>
+                <button
+                  onClick={() => setActiveTab('preferences')}
+                  className={`tab-button ${activeTab === 'preferences' ? 'tab-button-active' : ''}`}
+                >
+                  Find Chess Partners
+                </button>
+                <button
+                  onClick={() => setActiveTab('matches')}
+                  className={`tab-button ${activeTab === 'matches' ? 'tab-button-active' : ''}`}
+                >
+                  My Matches
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="header-gradient">
+        <div className="header-content">
           <h1 className="header-title">Welcome, {userData?.alias}!</h1>
           <div className="header-actions">
             <div className="tab-container">
@@ -548,10 +589,10 @@ const UserProfile: FC = () => {
                   Profile
                 </button>                
               </div>
-            </div>
+            </div> */}
 
             {/* Add NotificationBell here - between tabs and logout */}
-            <NotificationBell />
+            {/* <NotificationBell />
 
             <button onClick={handleLogout} className="logout-button">
               <LogOut className="button-icon" />
@@ -559,7 +600,7 @@ const UserProfile: FC = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       
 

@@ -427,3 +427,128 @@
   margin: 0.5rem 0 0 0;
   line-height: 1.4;
 }
+
+/* Mobile Responsive Fixes for Chess Match Form */
+@media (max-width: 768px) {
+  /* Fix the main layout - stack everything vertically on mobile */
+  .chess-match-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  /* Make preferences section mobile-friendly */
+  .preferences-section {
+    padding: 1rem;
+    order: 1; /* Show current preferences first */
+  }
+  
+  .preferences-title {
+    font-size: 1.25rem;
+  }
+  
+  /* Chess match form mobile fixes */
+  .chess-match-form {
+    padding: 1rem;
+    order: 2; /* Show form second */
+  }
+  
+  .form-title {
+    font-size: 1.1rem;
+  }
+  
+  /* Potential matches section */
+  .potential-matches {
+    position: static; /* Remove sticky on mobile */
+    order: 3; /* Show matches last */
+  }
+  
+  /* Make container mobile-friendly */
+  .chess-match-container {
+    margin: 1rem auto;
+    padding: 0 1rem;
+  }
+  
+  /* Fix form sections spacing */
+  .form-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Make selects more touch-friendly */
+  .area-select,
+  .date-select {
+    min-height: 100px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Fix time selection grid */
+  .time-selection {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  /* Make match cards mobile-friendly */
+  .match-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Fix User Profile Header for mobile */
+@media (max-width: 768px) {
+  .header-gradient {
+    padding: 1rem; /* Reduced from 1.5rem */
+    margin-bottom: 1rem; /* Reduced from 2rem */
+  }
+  
+  .header-title {
+    font-size: 1.5rem; /* Reduced from 1.875rem */
+  }
+  
+  .header-content {
+    gap: 0.75rem; /* Reduced gap */
+  }
+  
+  /* Make tab buttons smaller on mobile */
+  .tab-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Stack user profile container better */
+  .user-profile-container {
+    margin: 1rem auto;
+    padding: 0 1rem;
+  }
+}
+
+/* Very small mobile devices */
+@media (max-width: 480px) {
+  .chess-match-content {
+    gap: 0.75rem;
+  }
+  
+  .preferences-section,
+  .chess-match-form {
+    padding: 0.75rem;
+  }
+  
+  .header-gradient {
+    padding: 0.75rem;
+  }
+  
+  .header-title {
+    font-size: 1.25rem;
+  }
+  
+  /* Make buttons full-width on very small screens */
+  .submit-button,
+  .cancel-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+}

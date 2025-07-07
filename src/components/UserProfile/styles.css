@@ -180,50 +180,94 @@
 }
 
 /* Responsive styles */
+/* Responsive styles */
 @media (max-width: 1024px) {
   .profile-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* EFFICIENT MOBILE HEADER - 2 lines only */
 @media (max-width: 768px) {
   .profile-grid {
     grid-template-columns: 1fr;
   }
   
+  /* Compact header */
+  .header-gradient {
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Line 1: Welcome + Notification + Logout (all horizontal) */
   .header-content {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
   }
   
-  .header-actions {
-    width: 100%;
-    flex-direction: column;
+  /* Top row: Title on left, icons on right */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-}
-
-/* Add to src/components/UserProfile/styles.css */
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem; /* ✅ Add gap for proper spacing */
-}
-
-/* Ensure NotificationBell integrates well */
-.header-actions .notification-bell {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .header-actions {
-    flex-wrap: wrap;
+  
+  .header-title {
+    font-size: 1.1rem !important;
+    margin: 0 !important;
+  }
+  
+  /* Icons group: notification + logout */
+  .header-icons {
+    display: flex;
     gap: 0.5rem;
+    align-items: center;
   }
   
-  .header-actions .notification-bell {
-    order: -1; /* Put notification bell first on mobile */
+  /* Line 2: Just the tabs */
+  .header-actions {
+    width: 100% !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 0 !important;
+  }
+  
+  /* Smaller tabs */
+  .tab-button {
+    padding: 0.3rem 0.8rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  /* Icon-only logout for all screens */
+  .logout-button {
+    padding: 0.4rem !important;
+    min-width: auto !important;
+  }
+  
+  .logout-button .button-icon {
+    margin: 0 !important;
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+  }
+  
+  /* Hide logout text on mobile */
+  .logout-text {
+    display: none !important;
+  }
+}
+
+/* Also make logout icon-only on desktop for consistency */
+@media (min-width: 769px) {
+  .logout-button {
+    padding: 0.5rem !important;
+  }
+  
+  .logout-button .button-icon {
+    margin: 0 !important;
+  }
+  
+  .logout-text {
+    display: none !important;
   }
 }
