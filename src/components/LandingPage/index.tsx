@@ -116,19 +116,19 @@ const LandingPage = () => {
           
           <div className="community-gallery">
             <div className="gallery-row">
-              <img src="/chessnkaffe_community_1.jpg" alt="Chess players at event" className="gallery-img" />
-              <img src="/chessnkaffe_community_2.jpg" alt="Learning session" className="gallery-img" />
-              <img src="/chessnkaffe_community_5.jpg" alt="Community gathering" className="gallery-img" />
+              <img src="/chessnkaffe_community_01_women.jpg" alt="Women ChessnKaffe event for beginners" className="gallery-img" />
+              <img src="/chessnkaffe_community_02_summer.jpg" alt="ChessnKaffe at Den Sorte Plads" className="gallery-img" />
+              <img src="/chessnkaffe_community_03_chess.jpg" alt="ChessnKaffe Community gathering" className="gallery-img" />
             </div>
             <div className="gallery-row">
-              <img src="/chessnkaffe_community_6.jpg" alt="Casual chess game" className="gallery-img" />
-              <img src="/chessnkaffe_community_7.jpg" alt="Diverse players" className="gallery-img" />
-              <img src="/chessnkaffe_community_9.jpg" alt="Friendly competition" className="gallery-img" />
+              <img src="/chessnkaffe_community_04_cafe.jpg" alt="ChessnKaffe cozy cafe candles" className="gallery-img" />
+              <img src="/chessnkaffe_community_05_queer.jpg" alt="ChessnKaffe learning inclusive" className="gallery-img" />
+              <img src="/chessnkaffe_community_06_park.jpg" alt="ChessnKaffe Norrebro park" className="gallery-img" />
             </div>
             <div className="gallery-row">
-              <img src="/chessnkaffe_community_11.jpg" alt="Casual chess game" className="gallery-img" />
-              <img src="/chessnkaffe_community_12.jpg" alt="Diverse players" className="gallery-img" />
-              <img src="/chessnkaffe_community_13.jpg" alt="Friendly competition" className="gallery-img" />
+              <img src="/chessnkaffe_community_07_beginners.jpg" alt="ChessnKaffe lessons beginners" className="gallery-img" />
+              <img src="/chessnkaffe_community_08_den_sorte_plads.jpg" alt="ChessnKaffe at Den Sorte Plads Summer" className="gallery-img" />
+              <img src="/chessnkaffe_community_09_learn.jpg" alt="ChessnKaffe community" className="gallery-img" />
             </div>
           </div>
         </div>
@@ -247,7 +247,7 @@ const LandingPage = () => {
                 we&apos;re reshaping this science-sport into a space where all genders, levels, and backgrounds feel at home.
               </p>
             </div>
-            <img src="/chessnkaffe_community_4.jpg" alt="ChessnKaffe Community" style={{width: '100%', height: '300px', objectFit: 'cover', borderRadius: '16px'}} />
+            <img src="/chessnkaffe_community_fun_chess.jpg" alt="ChessnKaffe Community" style={{width: '100%', height: '300px', objectFit: 'cover', borderRadius: '16px'}} />
           </div>
         </div>
       </section>
@@ -282,12 +282,12 @@ const LandingPage = () => {
             </div>
             <div className="footer-section">
               <h4>ChessnKaffe Social Media</h4>
-              <a href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
-              <a href="#" target="_blank" rel="noopener noreferrer">Facebook</a>
+              <a href="https://www.instagram.com/chessnkaffe" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://www.facebook.com/chessnkaffe" target="_blank" rel="noopener noreferrer">Facebook</a>
             </div>
             <div className="footer-section">
               <h4>ChessnKaffe Contact</h4>
-              <a href="#" target="_blank" rel="noopener noreferrer">Signal</a>
+              <a href="https://signal.me/#eu/+4520906050" target="_blank" rel="noopener noreferrer">Signal</a>
               <p>Email: chessnkaffe@gmail.com</p>
               <p>Copenhagen, Denmark</p>
             </div>

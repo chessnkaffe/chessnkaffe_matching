@@ -258,7 +258,7 @@
 }
 
 /* Also make logout icon-only on desktop for consistency */
-@media (min-width: 769px) {
+/* @media (min-width: 769px) {
   .logout-button {
     padding: 0.5rem !important;
   }
@@ -269,5 +269,51 @@
   
   .logout-text {
     display: none !important;
+  }
+} */
+
+/* DESKTOP: Fix the layout - keep normal structure */
+/* DESKTOP: Use same layout as mobile */
+@media (min-width: 769px) {
+  /* Desktop: Same 2-line layout as mobile */
+  .header-content {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+  }
+  
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-icons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .header-actions {
+    width: 100% !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 0 !important;
+  }
+  
+  /* Desktop: Icon-only logout */
+  .logout-text {
+    display: none !important;
+  }
+  
+  .logout-button {
+    padding: 0.4rem !important;
+    min-width: auto !important;
+  }
+  
+  .logout-button .button-icon {
+    margin: 0 !important;
+    width: 1.1rem !important;
+    height: 1.1rem !important;
   }
 }
