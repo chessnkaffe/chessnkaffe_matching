@@ -1514,10 +1514,11 @@ const ChessMatchForm: FC = () => {
                     {match.isQueer && <span className="meta-tag">🏳️‍🌈 Queer</span>}
                   </div>
                   
-                  <div className="match-scores">
-                    <div className="compatibility-score">
+                  {/* <div className="match-scores"> */}
+                    {/* <div className="compatibility-score">
                       Compatibility: {Math.round(match.matchScore * 10)}%
-                    </div>
+                    </div> */}
+
                     {/* <div className="score-item">
                       <span className="score-label">Total Score:</span>
                       <span className="score-value">{Math.round(match.matchScore)}</span>
@@ -1546,7 +1547,7 @@ const ChessMatchForm: FC = () => {
                       <span className="score-label">Time Score:</span>
                       <span className="score-value">{Math.round(match.timeScore)}</span>
                     </div> */}
-                  </div>
+                  {/* </div> */}
 
                   <div className="match-details">
                     <div>Potential Date: {new Date(match.bestMatchingDate).toLocaleDateString('en-US', {

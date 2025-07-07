@@ -282,7 +282,7 @@ const SignupForm: FC = () => {
                 <option value="">Select your level</option>
                 {manualRatingOptions.map(option => (
                   <option key={option.value} value={option.value}>
-                    {option.label} ({option.range})
+                    {option.label} {/* ({option.range}) */}
                   </option>
                 ))}
               </select>
