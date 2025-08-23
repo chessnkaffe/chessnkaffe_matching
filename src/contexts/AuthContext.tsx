@@ -5,7 +5,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { 
   User, 
   onAuthStateChanged, 
-  signInWithEmailAndPassword 
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail 
 } from 'firebase/auth'
 import { auth } from '@/utils/firebase'
 import { useRouter } from 'next/navigation'
@@ -15,6 +16,7 @@ interface AuthContextType {
   loading: boolean
   login?: (email: string, password: string) => Promise<User>
   logout?: () => Promise<void>
+  resetPassword?: (email: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -69,12 +71,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  const resetPassword = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      console.log('Password reset email sent');
+    } catch (error) {
+      console.error('Password reset failed:', error);
+      throw error;
+    }
+  }
+
   return (
     <AuthContext.Provider value={{ 
       currentUser, 
       loading, 
       login, 
-      logout 
+      logout,
+      resetPassword 
     }}>
       {children}
     </AuthContext.Provider>

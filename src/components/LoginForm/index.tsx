@@ -11,12 +11,15 @@ const LoginForm: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useAuth();
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const { login, resetPassword } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setIsSubmitting(true);
 
     try {
@@ -28,6 +31,32 @@ const LoginForm: FC = () => {
       setError('Login failed: ' + (error.message || 'Unknown error'));
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      setError('Please enter your email address first');
+      return;
+    }
+
+    setError('');
+    setSuccess('');
+    setIsResettingPassword(true);
+
+    try {
+      if (resetPassword) {
+        await resetPassword(email);
+        setSuccess('If your email is registered, you will find a reset link in your inbox or spam. Contact us for help.');
+      }
+    } catch (error: any) {
+      console.error('Password reset error:', error);
+      setSuccess('If your email is registered, you will find a reset link in your inbox or spam. Contact us for help.');
+      //setError('Password reset failed: ' + (error.message || 'Unknown error'));
+    } finally {
+      setIsResettingPassword(false);
     }
   };
 
@@ -50,6 +79,7 @@ const LoginForm: FC = () => {
       </div>
 
       {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
 
       <form onSubmit={handleSubmit}>
         <input
@@ -73,6 +103,24 @@ const LoginForm: FC = () => {
           {isSubmitting ? 'Logging in...' : 'Login'}
         </button>
       </form>
+
+      <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+        <button 
+          onClick={handleForgotPassword}
+          disabled={isResettingPassword || isSubmitting}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#E67F0F',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            fontSize: '0.9rem'
+          }}
+        >
+          {isResettingPassword ? 'Sending...' : 'Forgot Password?'}
+        </button>
+      </div>
+
       <p>
         Don&apos;t have an account? <Link href="/signup">Sign Up</Link>
       </p>
