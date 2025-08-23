@@ -3,10 +3,10 @@ export const metadata = {
   description: 'View your chess matches',
 }
 
-export default function RootLayout({ children }) {
+export default function MatchesLayout({ children }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <>
+      {children}
+    </>
   )
 }

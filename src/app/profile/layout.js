@@ -3,10 +3,10 @@ export const metadata = {
   description: 'Profile info',
 }
 
-export default function RootLayout({ children }) {
+export default function ProfileLayout({ children }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <>
+      {children}
+    </>
   )
 }
