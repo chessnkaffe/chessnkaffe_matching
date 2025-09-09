@@ -107,3 +107,64 @@
   text-align: center;
   font-size: 0.9rem;
 }
+
+/* Password input container with toggle button */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 45px; /* Make space for the toggle button */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+  padding: 4px !important;
+  color: #333 !important;
+  z-index: 1;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  font-size: inherit !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.password-toggle:hover {
+  background-color: transparent !important;
+  color: #000 !important;
+  opacity: 1 !important;
+}
+
+.password-toggle:focus {
+  outline: none;
+  background-color: transparent !important;
+  color: var(--color-primary) !important;
+  opacity: 1 !important;
+}
+
+.password-toggle:active {
+  opacity: 1 !important;
+}
+
+.password-toggle:disabled {
+  opacity: 1 !important;
+}
+
+/* Ensure consistent icon sizing and visibility */
+.password-toggle svg {
+  width: 20px !important;
+  height: 20px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}

@@ -3,8 +3,9 @@ import { FC, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { auth, db } from '../../utils/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { Eye, EyeOff } from 'lucide-react'; 
 import './styles.css';
 
 interface ChessAccounts {
@@ -47,15 +48,23 @@ const SignupForm: FC = () => {
     }
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false); //authentication of email
+
+  // VARIABLES TO SEE PASSWORD EYE
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+
   const router = useRouter();
 
   // Chess Categories for manual rating changed 
   const manualRatingOptions = [
-    { label: "Beginner (0-500)", range: "0 - 500", value: "beginner" },
-    { label: "Apprentice (500-1000)", range: "500 - 1000", value: "apprentice" }, 
-    { label: "Intermediate (1000-1500)", range: "1000 - 1500", value: "intermediate" },
-    { label: "Advanced (1500-2000)", range: "1500 - 2000", value: "advanced" },
-    { label: "Expert (2000+)", range: "over 2000", value: "expert" }
+    { label: "Beginner (ELO: 0-500)", range: "0 - 500", value: "beginner" },
+    { label: "Apprentice (ELO: 500-1000)", range: "500 - 1000", value: "apprentice" }, 
+    { label: "Intermediate (ELO: 1000-1500)", range: "1000 - 1500", value: "intermediate" },
+    { label: "Advanced (ELO: 1500-2000)", range: "1500 - 2000", value: "advanced" },
+    { label: "Expert (ELO: 2000+)", range: "over 2000", value: "expert" }
   ];
   // const manualRatingOptions = [
   //   { label: "Beginner ♟️", range: "0 - 500", value: "pawn" },
@@ -150,6 +159,10 @@ const SignupForm: FC = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      // Send email verification
+      await sendEmailVerification(user);
+      setVerificationSent(true); // Don't automatically redirect to profile yet
+
   
       // Calculate manual rating if enabled
       const manualRating = chessAccounts.manual.enabled ? getManualRating(chessAccounts.manual.level) : null;
@@ -191,7 +204,7 @@ const SignupForm: FC = () => {
       };
   
       await setDoc(doc(db, 'users', user.uid), userData);
-      router.push('/profile');
+      //router.push('/profile');
     } catch (error) {
       console.error('Signup error:', error);
       alert('Error creating account. Please try again.');
@@ -220,7 +233,7 @@ const SignupForm: FC = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Alias"
+          placeholder="Insert an alias"
           value={alias}
           onChange={(e) => setAlias(e.target.value)}
           required
@@ -230,7 +243,7 @@ const SignupForm: FC = () => {
           onChange={(e) => setPronoun(e.target.value)}
           required
         >
-          <option value="">Select Pronoun</option>
+          <option value="">Select your pronoun(s)</option>
           <option value="she">she/her</option>
           <option value="they">they/them</option>
           <option value="he">he/him</option>
@@ -249,7 +262,7 @@ const SignupForm: FC = () => {
 
         {/* Chess Experience Section */}
         <div className="chess-experience-section">
-          <h3>Chess Experience</h3>
+          <h3>Share you Chess Level</h3>
           
           {/* Manual Rating */}
           <div className="rating-option">
@@ -265,7 +278,7 @@ const SignupForm: FC = () => {
                   }
                 }))}
               />
-              Manual Rating
+              Select it manually
             </label>
             {chessAccounts.manual.enabled && (
               <select
@@ -303,7 +316,7 @@ const SignupForm: FC = () => {
                   }
                 }))}
               />
-              Chess.com Account
+              Use your Chess.com account
             </label>
             {chessAccounts['chess.com'].enabled && (
               <div className="platform-input">
@@ -350,7 +363,7 @@ const SignupForm: FC = () => {
                   }
                 }))}
               />
-              Lichess Account
+              User your Lichess account
             </label>
             {chessAccounts.lichess.enabled && (
               <div className="platform-input">
@@ -391,13 +404,56 @@ const SignupForm: FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <input
+
+        {/* ADD SECTION - SET YOUR CREDENTIALS */}
+        {/* <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-        />
+        /> */}
+        {/* See password: */}
+        <div className="password-input-container">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setShowPassword(!showPassword)}
+            aria-label="Toggle password visibility"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
+
+        {/* Add this new confirm password field: */}
+        <div className="password-input-container">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            aria-label="Toggle confirm password visibility"
+          >
+            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
+
+
+
+
         <button type="submit" disabled={isLoading}>
           {isLoading ? 'Signing up...' : 'Sign Up'}
         </button>

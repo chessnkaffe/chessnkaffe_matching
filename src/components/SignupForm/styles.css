@@ -80,3 +80,76 @@
   font-style: italic;
   margin: 0;
 }
+
+
+/* Password input container with toggle button */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 45px; /* Make space for the toggle button */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+  padding: 4px !important;
+  color: #333 !important;
+  z-index: 1;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  font-size: inherit !important;
+  opacity: 1 !important; /* Force opacity to 1 */
+  visibility: visible !important; /* Force visibility */
+}
+
+.password-toggle:hover {
+  background-color: transparent !important;
+  color: #000 !important;
+  opacity: 1 !important;
+}
+
+.password-toggle:focus {
+  outline: none;
+  background-color: transparent !important;
+  color: var(--color-primary) !important;
+  opacity: 1 !important;
+}
+
+.password-toggle:active {
+  opacity: 1 !important;
+}
+
+.password-toggle:disabled {
+  opacity: 1 !important; /* Override any disabled opacity */
+}
+
+/* Ensure consistent icon sizing and visibility */
+.password-toggle svg {
+  width: 20px !important;
+  height: 20px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* Ensure the error message styling already exists */
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
+  font-size: 14px;
+}

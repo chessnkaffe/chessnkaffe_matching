@@ -49,8 +49,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       console.log('Login successful', {
         uid: userCredential.user.uid,
-        email: userCredential.user.email
+        email: userCredential.user.email,
+        emailVerified: userCredential.user.emailVerified
       });
+
+      if (!userCredential.user.emailVerified) {
+      // You can either:
+      // Option 1: Throw an error to prevent login
+      throw new Error('Please verify your email address before logging in. Check your inbox for the verification link.');
+      
+      // OR Option 2: Allow login but redirect to a verification page
+      // router.push('/verify-email');
+      // return userCredential.user;
+    }
       
       // Manual navigation after successful login
       router.push('/profile');
