@@ -29,7 +29,8 @@ const SignupForm: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [alias, setAlias] = useState('');
-  const [pronoun, setPronoun] = useState('');
+  const [pronoun, setPronoun] = useState(''); // Keep for backward compatibility
+  const [selectedPronouns, setSelectedPronouns] = useState<string[]>([]);
   const [queer, setQueer] = useState('');
   const [chessAccounts, setChessAccounts] = useState<ChessAccounts>({
     manual: {
@@ -73,6 +74,46 @@ const SignupForm: FC = () => {
   //   { label: "Expert ♜", range: "1500 - 2000", value: "ninja" },
   //   { label: "Master ♛", range: "over 2000", value: "dj" }
   // ];
+
+  const pronounOptions = [
+    { value: 'she/her', label: 'she/her' },
+    { value: 'they/them', label: 'they/them' },
+    { value: 'he/him', label: 'he/him' },
+    { value: 'any', label: 'any pronouns' },
+    { value: 'prefer-not-to-share', label: 'prefer not to share' }
+  ];
+
+  const queerOptions = [
+    { value: 'yes', label: 'Yes' },
+    { value: 'no', label: 'No' },
+    { value: 'prefer-not-to-say', label: 'Prefer not to say' }
+  ];
+
+  const handlePronounChange = (value: string) => {
+    if (value === 'any' || value === 'prefer-not-to-share') {
+      // If "any pronouns" or "prefer not to share" is selected, only keep that selection
+      setSelectedPronouns([value]);
+    } else {
+      // For other pronouns (she/her, they/them, he/him)
+      setSelectedPronouns(prev => {
+        // Remove "any" and "none" if they were previously selected
+        const filtered = prev.filter(p => p !== 'any' && p !== 'prefer-not-to-share');
+        
+        // Toggle the current selection
+        if (filtered.includes(value)) {
+          return filtered.filter(p => p !== value);
+        } else {
+          return [...filtered, value];
+        }
+      });
+    }
+  };
+
+  const getLegacyPronoun = (pronouns: string[]): string => {
+    if (pronouns.length === 0) return '';
+    if (pronouns.length === 1) return pronouns[0];
+    return pronouns[0]; // Default to first selected
+  };
 
   const fetchChessComRating = async () => {
     if (!chessAccounts['chess.com'].username) return;
@@ -154,6 +195,10 @@ const SignupForm: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (selectedPronouns.length === 0) {
+      alert('Please select at least one pronoun option.');
+      return;
+    }
     setIsLoading(true);
   
     try {
@@ -181,8 +226,9 @@ const SignupForm: FC = () => {
   
       const userData = {
         alias,
-        pronoun,
-        queer: queer === 'yes',
+        //pronoun: getLegacyPronoun(selectedPronouns), // Backward compatibility
+        pronouns: selectedPronouns, // New field
+        queer: queer,
         email: email.toLowerCase(), // Store email in lowercase for consistent lookups
         chessExperience: {
           manual: chessAccounts.manual.enabled ? {
@@ -238,31 +284,53 @@ const SignupForm: FC = () => {
           onChange={(e) => setAlias(e.target.value)}
           required
         />
-        <select
-          value={pronoun}
-          onChange={(e) => setPronoun(e.target.value)}
-          required
-        >
-          <option value="">Select your pronoun(s)</option>
-          <option value="she">she/her</option>
-          <option value="they">they/them</option>
-          <option value="he">he/him</option>
-          <option value="all">any pronouns</option>
-          <option value="none">prefer not to share</option>
-        </select>
-        <select
-          value={queer}
-          onChange={(e) => setQueer(e.target.value)}
-          required
-        >
-          <option value="">Are you Queer?</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
+        <div className="pronoun-selection">
+          <label className="form-label">Select your pronoun(s)</label>
+          <p className="helper-text">Pronouns help everyone talk to each other in the way that feels right.</p>
+          <div className="checkbox-group">
+            {pronounOptions.map(option => (
+              <label key={option.value} className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={selectedPronouns.includes(option.value)}
+                  onChange={() => handlePronounChange(option.value)}
+                  className="checkbox-input"
+                />
+                <span className="checkbox-text">{option.label}</span>
+              </label>
+            ))}
+          </div>
+          {selectedPronouns.length === 0 && (
+            <span className="error-text">Please select at least one pronoun option</span>
+          )}
+        </div>
+        <div className="queer-selection">
+          <label className="form-label">Are you queer?</label>
+          <p className="helper-text">'Queer' in the LGBTQIA+ sense —helps us prioritize inclusive matching.</p>
+          <div className="checkbox-group">
+            {queerOptions.map(option => (
+              <label key={option.value} className="checkbox-label">
+                <input
+                  type="radio"
+                  name="queer"
+                  value={option.value}
+                  checked={queer === option.value}
+                  onChange={(e) => setQueer(e.target.value)}
+                  className="checkbox-input"
+                />
+                <span className="checkbox-text">{option.label}</span>
+              </label>
+            ))}
+          </div>
+          {!queer && (
+            <span className="error-text">Please select an option</span>
+          )}
+        </div>
 
         {/* Chess Experience Section */}
-        <div className="chess-experience-section">
-          <h3>Share you Chess Level</h3>
+        <div className="chess-experience-selection">
+          <label className="form-label">Share your Chess Level</label>
+          <p className="helper-text">Select your level manually or add your Chess.com/Lichess username.</p>
           
           {/* Manual Rating */}
           <div className="rating-option">
@@ -316,7 +384,7 @@ const SignupForm: FC = () => {
                   }
                 }))}
               />
-              Use your Chess.com account
+              Share your Chess.com username
             </label>
             {chessAccounts['chess.com'].enabled && (
               <div className="platform-input">
@@ -363,7 +431,7 @@ const SignupForm: FC = () => {
                   }
                 }))}
               />
-              User your Lichess account
+              Share your Lichess username
             </label>
             {chessAccounts.lichess.enabled && (
               <div className="platform-input">

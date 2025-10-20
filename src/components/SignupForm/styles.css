@@ -43,7 +43,7 @@
   background-color: var(--color-primary-hover);
 }
 
-.form-container p {
+.form-container > p {
   text-align: center;
   margin-top: 15px;
 }
@@ -153,3 +153,78 @@
   border: 1px solid #f5c6cb;
   font-size: 14px;
 }
+
+.pronoun-selection {
+  margin-bottom: 1rem;
+}
+
+.queer-selection {
+  margin-bottom: 1rem;
+}
+
+.chess-experience-selection {
+  margin-bottom: 1rem;
+}
+
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #374151;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9fafb;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.checkbox-label:hover {
+  background-color: #e5e7eb;
+}
+
+.checkbox-input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary);
+}
+
+.checkbox-text {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.error-text {
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+}
+
+.helper-text {
+  font-size: 0.7rem;
+  color: #666;
+  margin-top: 0.05rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  line-height: 1.4;
+  display: block;
+}
+
+/* .queer-selection .helper-text {
+  text-align: left !important;
+} */

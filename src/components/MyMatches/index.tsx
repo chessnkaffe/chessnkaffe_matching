@@ -437,10 +437,17 @@ const MyMatches: FC = () => {
 
        <div className="match-meta">
          <span className="meta-tag">
-           {currentUser?.uid === match.senderId 
-             ? match.receiverDetails.pronouns 
-             : match.senderDetails.pronouns}
-         </span>
+            {(() => {
+              const pronounsData = currentUser?.uid === match.senderId 
+                ? match.receiverDetails.pronouns 
+                : match.senderDetails.pronouns;
+              
+              if (Array.isArray(pronounsData)) {
+                return pronounsData.join(', ');
+              }
+              return pronounsData || 'Not specified';
+            })()}
+          </span>
          {(currentUser?.uid === match.senderId 
            ? match.receiverDetails.isQueer 
            : match.senderDetails.isQueer) && 

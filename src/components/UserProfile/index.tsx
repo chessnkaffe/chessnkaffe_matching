@@ -2,7 +2,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; // Changed from useNavigate
 import { auth, db } from '../../utils/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { LogOut, Loader2, Edit2 } from 'lucide-react';
 import ChessMatchForm from '@/components/ChessMatchForm';
 import MyMatches from '@/components/MyMatches';
@@ -11,8 +11,9 @@ import './styles.css';
 
 interface UserData {
   alias: string;
-  pronoun: string;
-  queer: boolean;
+  //pronoun?: string;     // Make optional for backward compatibility
+  pronouns: string[];  // Add this line
+  queer: string;
   email: string;
   //avgRating: number | null; // Add avgRating to interface
   chessExperience: {
@@ -34,8 +35,8 @@ interface UserData {
 
 interface EditFormState {
   alias: string;
-  pronoun: string;
-  queer: boolean;
+  pronouns: string[];
+  queer: string;
   chessExperience: {
     manual: {
       enabled: boolean;
@@ -91,52 +92,100 @@ const UserProfile: FC = () => {
     return ratings[level as keyof typeof ratings] || 0;
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!auth.currentUser) {
-        router.push('/');
-        return;
-      }
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     if (!auth.currentUser) {
+  //       router.push('/');
+  //       return;
+  //     }
 
-      try {
-        const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+  //     try {
+  //       const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
         
-        if (userDoc.exists()) {
-          const user = userDoc.data() as UserData;
-          setUserData(user);
+  //       if (userDoc.exists()) {
+  //         const user = userDoc.data() as UserData;
+  //         setUserData(user);
           
-          // Initialize edit form with current data
-          setEditForm({
-            alias: user.alias || '',
-            pronoun: user.pronoun || '',
-            queer: user.queer || false,
-            chessExperience: {
-              manual: {
-                enabled: !!user.chessExperience?.manual,
-                level: user.chessExperience?.manual?.level || ''
-              },
-              'chess.com': {
-                enabled: !!user.chessExperience?.['chess.com'],
-                username: user.chessExperience?.['chess.com']?.username || '',
-                rating: user.chessExperience?.['chess.com']?.rating || null
-              },
-              lichess: {
-                enabled: !!user.chessExperience?.lichess,
-                username: user.chessExperience?.lichess?.username || '',
-                rating: user.chessExperience?.lichess?.rating || null
-              }
-            }
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //         // Initialize edit form with current data
+  //         setEditForm({
+  //           alias: user.alias || '',
+  //           pronoun: user.pronoun || '',
+  //           queer: user.queer || false,
+  //           chessExperience: {
+  //             manual: {
+  //               enabled: !!user.chessExperience?.manual,
+  //               level: user.chessExperience?.manual?.level || ''
+  //             },
+  //             'chess.com': {
+  //               enabled: !!user.chessExperience?.['chess.com'],
+  //               username: user.chessExperience?.['chess.com']?.username || '',
+  //               rating: user.chessExperience?.['chess.com']?.rating || null
+  //             },
+  //             lichess: {
+  //               enabled: !!user.chessExperience?.lichess,
+  //               username: user.chessExperience?.lichess?.username || '',
+  //               rating: user.chessExperience?.lichess?.rating || null
+  //             }
+  //           }
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching user data:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, [router.push]);
+  //   fetchUserData();
+  // }, [router.push]);
+
+
+  useEffect(() => {
+    if (!auth.currentUser) {
+      router.push('/');
+      return;
+    }
+
+    const userDocRef = doc(db, 'users', auth.currentUser.uid);
+    
+    // Use real-time listener instead of one-time fetch
+    const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const user = docSnapshot.data() as UserData;
+        setUserData(user);
+        
+        // Initialize edit form with current data
+        setEditForm({
+          alias: user.alias || '',
+          pronouns: user.pronouns || '',
+          queer: typeof user.queer === 'string' ? user.queer : (user.queer ? 'yes' : 'no'), // Convert boolean to string
+          chessExperience: {
+            manual: {
+              enabled: !!user.chessExperience?.manual,
+              level: user.chessExperience?.manual?.level || ''
+            },
+            'chess.com': {
+              enabled: !!user.chessExperience?.['chess.com'],
+              username: user.chessExperience?.['chess.com']?.username || '',
+              rating: user.chessExperience?.['chess.com']?.rating || null
+            },
+            lichess: {
+              enabled: !!user.chessExperience?.lichess,
+              username: user.chessExperience?.lichess?.username || '',
+              rating: user.chessExperience?.lichess?.rating || null
+            }
+          }
+        });
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error('Error fetching user data:', error);
+      setLoading(false);
+    });
+
+    // Cleanup function
+    return () => unsubscribe();
+  }, [router]);
 
 
   const fetchChessComRating = async (username: string) => {
@@ -256,7 +305,7 @@ const UserProfile: FC = () => {
 
       const updateData = {
         alias: editForm.alias,
-        pronoun: editForm.pronoun,
+        pronoun: editForm.pronouns,
         queer: editForm.queer,
         chessExperience: {
           manual: editForm.chessExperience.manual.enabled ? {
@@ -381,29 +430,48 @@ const UserProfile: FC = () => {
               </div>
               
               <div className="info-card">
-                <label className="info-label">Pronoun</label>
-                <select
-                  value={editForm.pronoun}
-                  onChange={e => setEditForm({...editForm, pronoun: e.target.value})}
-                  className="w-full p-2 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
+                <label className="info-label">Pronouns</label>
+                <div className="checkbox-group">
                   {pronounOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
+                    <label key={option.value} className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={editForm.pronouns.includes(option.value)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setEditForm({...editForm, pronouns: [...editForm.pronouns, option.value]});
+                          } else {
+                            setEditForm({...editForm, pronouns: editForm.pronouns.filter(p => p !== option.value)});
+                          }
+                        }}
+                        className="checkbox-input"
+                      />
+                      <span className="checkbox-text">{option.label}</span>
+                    </label>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div className="info-card">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={editForm.queer}
-                    onChange={e => setEditForm({...editForm, queer: e.target.checked})}
-                    className="w-4 h-4 rounded text-blue-600"
-                  />
-                  <label className="info-label mb-0">Queer</label>
+                <label className="info-label">Are you queer?</label>
+                <div className="queer-selection">
+                  <div className="checkbox-group">
+                    {['yes', 'no', 'prefer-not-to-say'].map(option => (
+                      <label key={option} className="checkbox-label">
+                        <input
+                          type="radio"
+                          name="editQueer"
+                          value={option}
+                          checked={editForm.queer === option}
+                          onChange={e => setEditForm({...editForm, queer: e.target.value})}
+                          className="checkbox-input"
+                        />
+                        <span className="checkbox-text">
+                          {option === 'yes' ? 'Yes' : option === 'no' ? 'No' : 'Prefer not to say'}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -627,14 +695,19 @@ const UserProfile: FC = () => {
                     <div className="info-value">{userData?.alias}</div>
                   </div>
                   <div className="info-card">
-                    <div className="info-label">Pronoun</div>
-                    <div className="info-value">{userData?.pronoun}</div>
+                    <div className="info-label">Pronouns</div>
+                    <div className="info-value">
+                      {userData?.pronouns && userData.pronouns.length > 0 
+                        ? userData.pronouns.join(', ')
+                        : 'Not specified'
+                      }
+                    </div>
                   </div>
                   <div className="info-card">
                     <div className="info-label">Email</div>
                     <div className="info-value">{userData?.email}</div>
                   </div>
-                  {userData?.queer && (
+                  {userData?.queer === 'yes' && (
                     <div className="info-card">
                       <div className="info-label">Identity</div>
                       <div className="badge badge-purple">🏳️‍🌈 Queer</div>

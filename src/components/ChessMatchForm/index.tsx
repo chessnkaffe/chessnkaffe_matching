@@ -75,8 +75,9 @@ interface MatchScoreCalculation {
 
 // Define interfaces for score calculation
 interface UserProfile {
-  queer?: boolean;
-  pronoun?: string;
+  queer?: string;
+  pronouns?: string[];
+  //pronoun?: string;
   preferredAreas: string[];
   availability: {
     dates: string[];
@@ -103,8 +104,8 @@ interface UserProfile {
 interface PotentialMatch {
   userId: string,
   avgRating: number;
-  queer?: boolean;
-  pronoun?: string | null;
+  queer?: string;
+  pronouns?: string[];
   preferredAreas: string[];
   availability: {
     dates: string[];
@@ -617,11 +618,9 @@ const ChessMatchForm: FC = () => {
         const mappedMatch = {
           userId: potentialMatchUser.email,
           displayName: potentialMatchUser.alias || 'Anonymous',
-          queer: typeof potentialMatchUser.queer === 'boolean' ? 
-                 potentialMatchUser.queer : 
-                 potentialMatchUser.queer === 'Yes',
+          queer: potentialMatchUser.queer,
           avgRating: potentialMatchUser.chessExperience?.average_rating || null,
-          pronoun: potentialMatchUser.pronoun || null,
+          pronouns: potentialMatchUser.pronouns || [],
           availability: {
             dates: matchPrefs.dates || [],
             startTime: matchPrefs.startTime || null,
@@ -640,6 +639,8 @@ const ChessMatchForm: FC = () => {
    
         const scores = calculateSimpleMatchScore({
           ...userProfile,
+          pronouns: userProfile.pronouns || [], // Ensure array
+          queer: userProfile.queer || 'no', // Ensure string
           availability: {
             dates: filteredDates,
             startTime: userMatchPrefs.startTime,
@@ -656,10 +657,12 @@ const ChessMatchForm: FC = () => {
    
         return {
           userId: mappedMatch.userId,
-          userDocId: potentialMatchUserId, // ✅ This should always be a string
+          userDocId: potentialMatchUserId, 
           displayName: mappedMatch.displayName,
-          pronouns: mappedMatch.pronoun || 'not specified',
-          isQueer: mappedMatch.queer,
+          pronouns: mappedMatch.pronouns?.length > 0 
+            ? mappedMatch.pronouns.join(', ')
+            : 'not specified',
+          isQueer: mappedMatch.queer === 'yes',
           chessRating: mappedMatch.avgRating ?? 800,
           availability: {
             dates: mappedMatch.availability.dates,
@@ -715,6 +718,7 @@ const ChessMatchForm: FC = () => {
   // Simplified match score calculation based on available fields
   const calculateSimpleMatchScore = (currentUser: UserProfile, potentialMatch: PotentialMatch): MatchScoreCalculation => {
     console.log('========= MATCH CALCULATION START =========');
+    
     
     const missingFields: string[] = [];
     
@@ -795,39 +799,108 @@ const ChessMatchForm: FC = () => {
     }
     
     // Calculate queer score
+    // let queerScore = 0;
+    // if (potentialMatch.queer === null || potentialMatch.queer === undefined) {
+    //   missingFields.push('Queer Status');
+    // } else if (currentUser.queer !== undefined) {
+    //   queerScore = currentUser.queer === potentialMatch.queer ? 10 : 1;
+    // }
+
+    // ---QUEER SCORING - Handles string values with prefer-not-to-say
     let queerScore = 0;
-    if (potentialMatch.queer === null || potentialMatch.queer === undefined) {
+    if (!potentialMatch.queer) {
       missingFields.push('Queer Status');
-    } else if (currentUser.queer !== undefined) {
-      queerScore = currentUser.queer === potentialMatch.queer ? 10 : 1;
+    } else if (currentUser.queer) {
+      const currentQueer = currentUser.queer.toLowerCase();
+      const matchQueer = potentialMatch.queer.toLowerCase();
+      
+      // Score 10: Perfect match (same explicit answer)
+      if (currentQueer === matchQueer) {
+        queerScore = 10;
+      }
+      // Score 8: Either has "prefer-not-to-say" (high compatibility, queer-friendly)
+      else if (currentQueer === 'prefer-not-to-say' || matchQueer === 'prefer-not-to-say') {
+        queerScore = 8;
+      }
+      // Score 3: Yes/No mismatch (still some common ground)
+      else if ((currentQueer === 'yes' && matchQueer === 'no') || (currentQueer === 'no' && matchQueer === 'yes')) {
+        queerScore = 3;
+      }
     }
+    // ---QUEER SCORING 
     
     // Calculate pronoun score
+    // let pronounScore = 0;
+    // if (!potentialMatch.pronoun) {
+    //   missingFields.push('Pronouns');
+    // } else if (currentUser.pronoun) {
+    //   if (currentUser.pronoun.toLowerCase() === potentialMatch.pronoun.toLowerCase()) {
+    //     pronounScore = 10;
+    //   }
+    //   // Handle "Any pronouns" cases
+    //   else if (potentialMatch.pronoun.toLowerCase() === 'any pronouns') {
+    //     pronounScore = 8;
+    //   }
+    //   // Handle when current user has "Any pronouns"
+    //   else if (currentUser.pronoun.toLowerCase() === 'any pronouns') {
+    //     pronounScore = 6;
+    //   }
+    //   // Handle "Prefer not to share" cases for either user
+    //   else if (potentialMatch.pronoun.toLowerCase() === 'prefer not to share' || 
+    //             currentUser.pronoun.toLowerCase() === 'prefer not to share') {
+    //     pronounScore = 0;
+    //   }
+    //   // No match but both have specified pronouns
+    //   else {
+    //     pronounScore = 0;
+    //   }
+    // }
+
+    // --------PRONOUN SCORING - Handles array of pronouns
+    const calculatePronounScore = (currentUserPronouns: string[] | undefined, potentialMatchPronouns: string[] | undefined): number => {
+      // If either user has no pronouns specified
+      if (!currentUserPronouns?.length || !potentialMatchPronouns?.length) {
+        return 0;
+      }
+
+      const currentPronouns = currentUserPronouns.map(p => p.toLowerCase().trim());
+      const matchPronouns = potentialMatchPronouns.map(p => p.toLowerCase().trim());
+
+      // Check for "prefer not to share"
+      const currentHasPreferNotToShare = currentPronouns.some(p => 
+        p.includes('prefer-not-to-share') || p.includes('prefer not to share')
+      );
+      const matchHasPreferNotToShare = matchPronouns.some(p => 
+        p.includes('prefer-not-to-share') || p.includes('prefer not to share')
+      );
+
+      // Check for "any pronouns"
+      const currentHasAny = currentPronouns.some(p => p === 'any' || p.includes('any pronouns'));
+      const matchHasAny = matchPronouns.some(p => p === 'any' || p.includes('any pronouns'));
+
+      // Score 10: Direct match between arrays
+      const hasDirectMatch = currentPronouns.some(cp => matchPronouns.includes(cp));
+      if (hasDirectMatch) return 10;
+
+      // Score 8: Either accepts "any pronouns"
+      if (currentHasAny || matchHasAny) return 8;
+
+      // Score 5: Either prefers not to share (queer-friendly indicator)
+      if (currentHasPreferNotToShare || matchHasPreferNotToShare) return 5;
+
+      // Score 0: No compatibility
+      return 0;
+    };
+
+    // Calculate pronoun score
     let pronounScore = 0;
-    if (!potentialMatch.pronoun) {
+    if (!potentialMatch.pronouns?.length) {
       missingFields.push('Pronouns');
-    } else if (currentUser.pronoun) {
-      if (currentUser.pronoun.toLowerCase() === potentialMatch.pronoun.toLowerCase()) {
-        pronounScore = 10;
-      }
-      // Handle "Any pronouns" cases
-      else if (potentialMatch.pronoun.toLowerCase() === 'any pronouns') {
-        pronounScore = 8;
-      }
-      // Handle when current user has "Any pronouns"
-      else if (currentUser.pronoun.toLowerCase() === 'any pronouns') {
-        pronounScore = 6;
-      }
-      // Handle "Prefer not to share" cases for either user
-      else if (potentialMatch.pronoun.toLowerCase() === 'prefer not to share' || 
-                currentUser.pronoun.toLowerCase() === 'prefer not to share') {
-        pronounScore = 0;
-      }
-      // No match but both have specified pronouns
-      else {
-        pronounScore = 0;
-      }
+    } else {
+      pronounScore = calculatePronounScore(currentUser.pronouns, potentialMatch.pronouns);
     }
+    // --------PRONOUN SCORING 
+
     
     // Find best matching area and calculate distance score
     const { area: bestArea, distance } = findShortestDistance(
@@ -1183,7 +1256,9 @@ const ChessMatchForm: FC = () => {
       matchScore: match.matchScore,
       senderDetails: {
         displayName: userData.alias || 'Anonymous',
-        pronouns: userData.pronoun || 'Not specified',
+        pronouns: userData.pronouns && userData.pronouns.length > 0 
+          ? userData.pronouns.join(', ')
+          : userData.pronoun || 'Not specified',
         chessRating: userData.chessExperience?.average_rating || 0,
         isQueer: userData.queer || false
       },
@@ -1510,7 +1585,9 @@ const ChessMatchForm: FC = () => {
                   </div>
 
                   <div className="match-meta">
-                    <span className="meta-tag">{match.pronouns}</span>
+                    <span className="meta-tag">
+                      {Array.isArray(match.pronouns) ? match.pronouns.join(', ') : match.pronouns}
+                    </span>
                     {match.isQueer && <span className="meta-tag">🏳️‍🌈 Queer</span>}
                   </div>
                   

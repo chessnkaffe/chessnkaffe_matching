@@ -317,3 +317,37 @@
     height: 1.1rem !important;
   }
 }
+
+.queer-selection .checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9fafb;
+}
+
+.queer-selection .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.queer-selection .checkbox-label:hover {
+  background-color: #e5e7eb;
+}
+
+.queer-selection .checkbox-input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.queer-selection .checkbox-text {
+  font-size: 0.875rem;
+  color: #374151;
+}
